@@ -1,6 +1,7 @@
 import './App.css'
 import { useRegisterSW } from "virtual:pwa-register/react";
 import { Button } from './components/ui/button'
+import HomePage from "./pages/HomePage"
 
 function App() {
 
@@ -23,8 +24,7 @@ const intervalMS = 60 * 60 * 1000;
 
   return (
     <>
-      <div>
-      <h1 className='bg-green-300 text-5xl'>Ayah Flow - pwa</h1>
+      <HomePage/>
 
       {offlineReady && <p className='bg-gray-500 text-2xl'>App ready to work offline</p>}
 
@@ -33,7 +33,7 @@ const intervalMS = 60 * 60 * 1000;
           Update Available — Reload
         </Button>
       )}
-    </div>
+    
     </>
   )
 }
