@@ -1,0 +1,16 @@
+export const profileTheme = {
+  bg:        "#141f0a",
+  surface:   "#1a2710",
+  surface2:  "#1f3010",
+  border:    "#2e4a15",
+  gold:      "#d4a84b",
+  goldLight: "#f0d080",
+  green:     "#c8e68a",
+  greenMid:  "#8aab5c",
+  greenDim:   "#5a7a35",
+  greenFaint: "#3a5020",
+  text:      "#e8f0d0",
+  textMuted: "#7aaa50",
+  textDim:   "#4a6a2a",
+  serif:     "'Georgia', 'Times New Roman', serif",
+};

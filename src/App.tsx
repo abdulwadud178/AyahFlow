@@ -4,6 +4,8 @@ import { useRegisterSW } from "virtual:pwa-register/react";
 import { Button } from './components/ui/button'
 import HomePage from "./pages/HomePage"
 import ReadingPage from "./pages/ReadingPage"
+import CommunityPage from "./pages/CommunityPage"
+import ProfilePage from './pages/ProfilePage';
 import { BottomNav, type NavTab } from "./components/ButtomNav"
 
 const ROUTES: NavTab[] = ["home", "read", "explore", "ranks", "settings"];
@@ -49,8 +51,8 @@ function App() {
       {activeTab === "home" && <HomePage onNavigate={setActiveTab} />}
       {activeTab === "read" && <ReadingPage />}
       {activeTab === "explore" && <div className="min-h-screen pb-24">Explore page coming soon</div>}
-      {activeTab === "ranks" && <div className="min-h-screen pb-24">Ranks page coming soon</div>}
-      {activeTab === "settings" && <div className="min-h-screen pb-24">Settings page coming soon</div>}
+      {activeTab === "ranks" && <CommunityPage />}
+      {activeTab === "settings" && <ProfilePage/>}
 
       <BottomNav active={activeTab} onChange={setActiveTab} />
 
