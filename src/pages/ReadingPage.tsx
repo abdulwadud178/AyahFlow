@@ -7,7 +7,7 @@ import { NoteModal } from "../components/NoteModal";
 import { VerseCard } from "../components/VerseCard";
 import { AudioPlayer } from "../components/AudioPlayer";
 import type { DisplayMode, ScriptStyle, Verse } from "../types/reading";
-import { MOCK_SURAH, MOCK_VERSES, RECITERS, SCRIPT_STYLES } from "../data/readingData";
+import { MOCK_SURAH, RECITERS, SCRIPT_STYLES } from "../data/readingData";
 import { useVerses, useChapters } from "../hooks/useApi";
 
 
@@ -18,8 +18,8 @@ export default function ReadingPage() {
 
   // Find current surah from API data or fallback
   const currentSurah = chapters.find(c => c.number === currentSurahId) || MOCK_SURAH;
-  // Use API verses if available, otherwise fallback to static data
-  const verses = apiVerses.length > 0 ? apiVerses : MOCK_VERSES;
+  // Use verses from the API hook (which includes fallbacks)
+  const verses = apiVerses;
 
   const [scriptStyle, setScriptStyle] = useState<ScriptStyle>("indo-pak");
   const [selectedReciter, setSelectedReciter] = useState("mishary");

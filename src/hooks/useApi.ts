@@ -2,6 +2,7 @@ import { useState, useEffect } from 'react';
 import { getChapters, getVersesByChapter, getRandomVerse, getDefaultIds, loadResources, hasApiCredentials } from '../lib/api';
 import type { Surah, Verse } from '../types/reading';
 import type { AyahOfDay } from '../types/types';
+import { MOCK_VERSES } from '../data/readingData';
 
 // Hook for chapters list
 export function useChapters() {
@@ -38,28 +39,65 @@ export function useVerses(chapterId: number) {
   useEffect(() => {
     if (!chapterId) return;
 
-    // Only attempt API call if credentials are available
-    if (!hasApiCredentials()) {
-      setLoading(false);
-      return;
-    }
+    // Always attempt to load verses, with fallback if no credentials
+    const loadVerses = async () => {
+      setLoading(true);
+      setError(null);
 
-    setLoading(true);
-    getDefaultIds()
-      .then((ids) => getVersesByChapter(chapterId, {
-        translationId: ids.translationId,
-        recitationId: ids.recitationId,
-        tafsirId: ids.tafsirId,
-        words: true,
-        perPage: 50,
-      }))
-      .then(setVerses)
-      .catch((err) => {
+      if (!hasApiCredentials()) {
+        // Provide fallback verses - use MOCK_VERSES for chapter 18, generic message for others
+        if (chapterId === 18) {
+          setVerses(MOCK_VERSES);
+        } else {
+          const fallbackVerses: Verse[] = [
+            {
+              number: 1,
+              arabic: `بِسْمِ اللَّهِ الرَّحْمَٰنِ الرَّحِيمِ`,
+              translation: `This surah is not available in demo mode. Please configure API credentials to access all chapters.`,
+              transliteration: `Bismillāhir-raḥmānir-raḥīm`,
+              tafseer: `API credentials are required to access verses from this chapter.`,
+            }
+          ];
+          setVerses(fallbackVerses);
+        }
+        setLoading(false);
+        return;
+      }
+
+      try {
+        const ids = await getDefaultIds();
+        const apiVerses = await getVersesByChapter(chapterId, {
+          translationId: ids.translationId,
+          recitationId: ids.recitationId,
+          tafsirId: ids.tafsirId,
+          words: true,
+          perPage: 50,
+        });
+        setVerses(apiVerses);
+      } catch (err) {
         console.error(`Failed to load verses for chapter ${chapterId}:`, err);
-        setError(err.message);
-        // Could set fallback verses here
-      })
-      .finally(() => setLoading(false));
+        setError(err instanceof Error ? err.message : 'Unknown error');
+        // Provide fallback verses on error - use MOCK_VERSES for chapter 18, error message for others
+        if (chapterId === 18) {
+          setVerses(MOCK_VERSES);
+        } else {
+          const fallbackVerses: Verse[] = [
+            {
+              number: 1,
+              arabic: `بِسْمِ اللَّهِ الرَّحْمَٰنِ الرَّحِيمِ`,
+              translation: `Failed to load verses. Please check your API credentials.`,
+              transliteration: `Bismillāhir-raḥmānir-raḥīm`,
+              tafseer: `API call failed. Please verify your credentials and try again.`,
+            }
+          ];
+          setVerses(fallbackVerses);
+        }
+      } finally {
+        setLoading(false);
+      }
+    };
+
+    loadVerses();
   }, [chapterId]);
 
   return { verses, loading, error };
