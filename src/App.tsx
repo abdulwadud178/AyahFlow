@@ -7,6 +7,7 @@ import ReadingPage from "./pages/ReadingPage"
 import CommunityPage from "./pages/CommunityPage"
 import ProfilePage from './pages/ProfilePage';
 import { BottomNav, type NavTab } from "./components/ButtomNav"
+import { useApiResources } from "./hooks/useApi";
 
 const ROUTES: NavTab[] = ["home", "read", "explore", "ranks", "settings"];
 const intervalMS = 60 * 60 * 1000;
@@ -21,6 +22,9 @@ function App() {
   const [deferredPrompt, setDeferredPrompt] = useState<any>(null);
   const [isIOS, setIsIOS] = useState(false);
   const [isInstalled, setIsInstalled] = useState(false);
+
+  // Load API resources on app start
+  useApiResources();
 
   const {
     needRefresh: [needRefresh],

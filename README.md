@@ -1,53 +1,109 @@
-# React + TypeScript + Vite
+# AyahFlow - Quran Reading App
 
-This template provides a minimal setup to get React working in Vite with HMR and some ESLint rules.
+A modern Quran reading application built with React, TypeScript, and Vite.
 
-Currently, two official plugins are available:
+## Features
 
-- [@vitejs/plugin-react](https://github.com/vitejs/vite-plugin-react/blob/main/packages/plugin-react) uses [Oxc](https://oxc.rs)
-- [@vitejs/plugin-react-swc](https://github.com/vitejs/vite-plugin-react/blob/main/packages/plugin-react-swc) uses [SWC](https://swc.rs/)
+- 📖 Interactive Quran reading with multiple script styles
+- 🎵 Audio recitations
+- 📝 Verse translations and tafsirs
+- 🎯 Daily reading goals and streaks
+- 🌙 Ayah of the day
+- 📱 PWA support for offline reading
 
-## React Compiler
+## API Integration
 
-The React Compiler is not enabled on this template because of its impact on dev & build performances. To add it, see [this documentation](https://react.dev/learn/react-compiler/installation).
+This app integrates with the [Quran Foundation Content API](https://quran.foundation/developers) for dynamic content.
 
-## Expanding the ESLint configuration
+### Setup API Credentials
 
-If you are developing a production application, we recommend updating the configuration to enable type-aware lint rules:
+1. Get your API credentials from [Quran Foundation Developers](https://quran.foundation/developers)
+2. Create a `.env` file in the root directory:
+   ```
+   VITE_QURAN_API_CLIENT_ID=your_client_id_here
+   VITE_QURAN_API_CLIENT_SECRET=your_client_secret_here
+   VITE_QURAN_API_ENV=testing  # or 'production'
+   ```
+### CORS Handling
 
-```js
-export default defineConfig([
-  globalIgnores(['dist']),
-  {
-    files: ['**/*.{ts,tsx}'],
-    extends: [
-      // Other configs...
+**Development**: The app uses Vite's proxy server to handle CORS issues during development.
 
-      // Remove tseslint.configs.recommended and replace with this
-      tseslint.configs.recommendedTypeChecked,
-      // Alternatively, use this for stricter rules
-      tseslint.configs.strictTypeChecked,
-      // Optionally, add this for stylistic rules
-      tseslint.configs.stylisticTypeChecked,
+**Production**: You'll need a backend server to proxy API requests, as the Quran Foundation API doesn't allow direct browser requests due to security (client credentials should not be exposed in frontend code).
 
-      // Other configs...
-    ],
-    languageOptions: {
-      parserOptions: {
-        project: ['./tsconfig.node.json', './tsconfig.app.json'],
-        tsconfigRootDir: import.meta.dirname,
-      },
-      // other options...
-    },
-  },
-])
+### Testing the API Integration
+
+1. **Without Credentials**: The app will use static fallback data
+2. **With Credentials**: Add your API credentials to `.env` and restart the dev server
+
+The proxy configuration in `vite.config.ts` routes API calls through your development server, avoiding CORS issues during development.
+
+### API Features
+
+- **Dynamic Chapters**: Fetches all 114 surahs with metadata
+- **Verses**: Loads verses with Arabic text, translations, and tafsirs
+- **Ayah of the Day**: Random verse from the API
+- **Fallback Support**: App works with static data if API is unavailable
+
+### API Endpoints Used
+
+- `/chapters` - Chapter list
+- `/verses/by_chapter/:id` - Verses for a chapter
+- `/verses/random` - Random ayah
+- `/resources/translations` - Available translations
+- `/resources/recitations` - Audio recitations
+- `/resources/tafsirs` - Tafsir sources
+
+## Development
+
+```bash
+# Install dependencies
+npm install
+
+# Start development server
+npm run dev
+
+# Build for production
+npm run build
+
+# Preview production build
+npm run preview
 ```
 
-You can also install [eslint-plugin-react-x](https://github.com/Rel1cx/eslint-react/tree/main/packages/plugins/eslint-plugin-react-x) and [eslint-plugin-react-dom](https://github.com/Rel1cx/eslint-react/tree/main/packages/plugins/eslint-plugin-react-dom) for React-specific lint rules:
+## Tech Stack
 
-```js
-// eslint.config.js
-import reactX from 'eslint-plugin-react-x'
+- **Frontend**: React 19, TypeScript, Vite
+- **Styling**: Tailwind CSS, Custom CSS variables
+- **Animations**: Framer Motion
+- **PWA**: Vite PWA plugin
+- **API**: Quran Foundation Content API v4
+
+## Project Structure
+
+```
+src/
+├── components/     # Reusable UI components
+├── pages/         # Page components
+├── hooks/         # Custom React hooks
+├── lib/           # Utilities and API functions
+├── data/          # Static fallback data
+├── types/         # TypeScript type definitions
+└── assets/        # Static assets
+```
+
+## API Architecture
+
+The app uses a hybrid approach:
+- **Primary**: Dynamic data from Quran Foundation API
+- **Fallback**: Static data for offline/reliability
+- **Caching**: Resources cached at startup for performance
+
+## Contributing
+
+1. Fork the repository
+2. Create a feature branch
+3. Make your changes
+4. Test with both API and fallback modes
+5. Submit a pull request
 import reactDom from 'eslint-plugin-react-dom'
 
 export default defineConfig([

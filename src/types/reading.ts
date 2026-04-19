@@ -2,8 +2,8 @@ export interface Verse {
   number: number;
   arabic: string;
   translation: string;
-  transliteration: string;
-  tafseer: string;
+  transliteration?: string;
+  tafseer?: string;
 }
 
 export interface Surah {

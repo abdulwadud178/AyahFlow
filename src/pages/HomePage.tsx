@@ -13,9 +13,9 @@ import {
   mockDailyGoal,
   mockLastReading,
   mockChallenges,
-  mockAyah,
   mockStats,
 } from "../data/mockData";
+import { useAyahOfDay } from "../hooks/useApi";
 
 interface HomePageProps {
   onNavigate?: (tab: NavTab) => void;
@@ -31,8 +31,15 @@ export default function HomePage({ onNavigate }: HomePageProps) {
   const dailyGoal = mockDailyGoal;
   const lastReading = mockLastReading;
   const challenges = mockChallenges;
-  const ayah = mockAyah;
   const stats = mockStats;
+
+  // Use API for ayah of the day
+  const { ayah: apiAyah } = useAyahOfDay();
+  const ayah = apiAyah || {
+    arabicText: "فَإِنَّ مَعَ الْعُسْرِ يُسْرًا\nإِنَّ مَعَ الْعُسْرِ يُسْرًا",
+    translation: '"For indeed, with hardship will be ease. Indeed, with hardship will be ease."',
+    source: "[ Surah Ash-Sharh 94:5–6 ]",
+  };
 
   return (
     <div className="min-h-screen pb-24" style={{ background: "var(--bg-deep)", fontFamily: "var(--font-body)" }}>

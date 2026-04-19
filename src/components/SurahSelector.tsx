@@ -1,13 +1,23 @@
 import { useState } from "react";
 import { motion } from "framer-motion";
-import { SURAHS_LIST, SURAH_NAMES } from "../data/readingData";
+import { useChapters } from "../hooks/useApi";
+import { SURAH_NAMES } from "../data/readingData";
 
 export function SurahSelector({
   current, onSelect, onClose,
 }: { current: number; onSelect: (n: number) => void; onClose: () => void }) {
+  const { chapters } = useChapters();
   const [search, setSearch] = useState("");
-  const filtered = SURAHS_LIST.filter(s => {
-    const name = SURAH_NAMES[s.number] ?? `Surah ${s.number}`;
+
+  // Fallback to static data if API fails or no credentials
+  const surahsList = chapters.length > 0 ? chapters : Array.from({ length: 114 }, (_, i) => ({
+    number: i + 1,
+    name: `Surah ${i + 1}`,
+    englishName: SURAH_NAMES[i + 1] || `Surah ${i + 1}`,
+  }));
+
+  const filtered = surahsList.filter(s => {
+    const name = s.englishName || SURAH_NAMES[s.number] || `Surah ${s.number}`;
     return name.toLowerCase().includes(search.toLowerCase()) || String(s.number).includes(search);
   });
 
@@ -38,7 +48,7 @@ export function SurahSelector({
       </div>
       <div className="overflow-y-auto px-5 pb-6" style={{ height: "calc(70vh - 130px)" }}>
         {filtered.map(s => {
-          const name = SURAH_NAMES[s.number] ?? `Surah ${s.number}`;
+          const name = s.englishName || SURAH_NAMES[s.number] || `Surah ${s.number}`;
           return (
             <button
               key={s.number}

@@ -6,15 +6,21 @@ import { TafseerPanel } from "../components/TafseerPanel";
 import { NoteModal } from "../components/NoteModal";
 import { VerseCard } from "../components/VerseCard";
 import { AudioPlayer } from "../components/AudioPlayer";
-import type { DisplayMode, ScriptStyle, Surah, Verse } from "../types/reading";
+import type { DisplayMode, ScriptStyle, Verse } from "../types/reading";
 import { MOCK_SURAH, MOCK_VERSES, RECITERS, SCRIPT_STYLES } from "../data/readingData";
-
+import { useVerses, useChapters } from "../hooks/useApi";
 
 
 export default function ReadingPage() {
-  // State
-  const [surah] = useState<Surah>(MOCK_SURAH);
-  const [verses] = useState<Verse[]>(MOCK_VERSES);
+  const [currentSurahId, setCurrentSurahId] = useState(18);
+  const { chapters } = useChapters();
+  const { verses: apiVerses, loading: versesLoading } = useVerses(currentSurahId);
+
+  // Find current surah from API data or fallback
+  const currentSurah = chapters.find(c => c.number === currentSurahId) || MOCK_SURAH;
+  // Use API verses if available, otherwise fallback to static data
+  const verses = apiVerses.length > 0 ? apiVerses : MOCK_VERSES;
+
   const [scriptStyle, setScriptStyle] = useState<ScriptStyle>("indo-pak");
   const [selectedReciter, setSelectedReciter] = useState("mishary");
   const [displayMode, setDisplayMode] = useState<DisplayMode>("both");
@@ -71,10 +77,10 @@ export default function ReadingPage() {
           style={{ background: "rgba(255,255,255,0.04)", borderColor: "rgba(255,255,255,0.08)" }}>
           <div>
             <p className="text-[13px] font-extrabold text-left" style={{ color: "var(--gold-light)" }}>
-              {surah.englishName}
+              {currentSurah.englishName}
             </p>
             <p className="text-[10px] text-left" style={{ color: "var(--text-muted)" }}>
-              {surah.totalVerses} verses · {surah.revelationType}
+              {currentSurah.totalVerses} verses · {currentSurah.revelationType}
             </p>
           </div>
           <svg width="12" height="12" viewBox="0 0 24 24" fill="none" className="ml-auto shrink-0">
@@ -167,19 +173,35 @@ export default function ReadingPage() {
 
       {/* VERSES */}
       <div ref={contentRef} className="px-5 pb-32">
-        {verses.map(verse => (
-          <VerseCard
-            key={verse.number}
-            verse={verse}
-            scriptStyle={scriptStyle}
-            displayMode={displayMode}
-            showTranslit={showTranslit}
-            isFav={favs.has(verse.number)}
-            onFav={() => toggleFav(verse.number)}
-            onTafseer={() => setTafseerVerse(verse)}
-            onNote={() => setNoteVerse(verse)}
-          />
-        ))}
+        {versesLoading ? (
+          <div className="flex justify-center py-8">
+            <div className="text-center">
+              <div className="w-8 h-8 border-2 border-t-transparent rounded-full mx-auto mb-2 animate-spin"
+                style={{ borderColor: "var(--gold)", borderTopColor: "transparent" }} />
+              <p className="text-[14px]" style={{ color: "var(--text-muted)" }}>Loading verses...</p>
+            </div>
+          </div>
+        ) : verses.length > 0 ? (
+          verses.map(verse => (
+            <VerseCard
+              key={verse.number}
+              verse={verse}
+              scriptStyle={scriptStyle}
+              displayMode={displayMode}
+              showTranslit={showTranslit}
+              isFav={favs.has(verse.number)}
+              onFav={() => toggleFav(verse.number)}
+              onTafseer={() => setTafseerVerse(verse)}
+              onNote={() => setNoteVerse(verse)}
+            />
+          ))
+        ) : (
+          <div className="text-center py-8">
+            <p className="text-[14px]" style={{ color: "var(--text-muted)" }}>
+              No verses available. Please check your connection and try again.
+            </p>
+          </div>
+        )}
 
         {/* Personal Reflections */}
         {Object.keys(notes).length > 0 && (
@@ -222,14 +244,14 @@ export default function ReadingPage() {
 
       {/* AUDIO PLAYER */}
       <AudioPlayer
-        surah={surah}
+        surah={currentSurah}
         currentVerse={currentAudioVerse}
-        totalVerses={surah.totalVerses}
+        totalVerses={currentSurah.totalVerses}
         isPlaying={isPlaying}
         progress={audioProgress}
         onPlayPause={() => setIsPlaying(p => !p)}
         onPrev={() => setCurrentAudioVerse(v => Math.max(1, v - 1))}
-        onNext={() => setCurrentAudioVerse(v => Math.min(surah.totalVerses, v + 1))}
+        onNext={() => setCurrentAudioVerse(v => Math.min(currentSurah.totalVerses, v + 1))}
       />
 
       {/* OVERLAYS */}
@@ -255,8 +277,8 @@ export default function ReadingPage() {
               className="fixed inset-0 z-40" style={{ background: "rgba(0,0,0,0.5)" }}
               onClick={() => setShowSurahPicker(false)} />
             <SurahSelector
-              current={surah.number}
-              onSelect={(n) => console.log("Selected surah:", n)}
+              current={currentSurahId}
+              onSelect={(n) => setCurrentSurahId(n)}
               onClose={() => setShowSurahPicker(false)}
             />
           </>
