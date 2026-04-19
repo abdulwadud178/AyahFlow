@@ -1,7 +1,7 @@
 import React from "react";
 import { motion } from "framer-motion";
-import { Share2, Users, Star, Flame, TrendingUp, Heart } from "lucide-react";
-import type { LeaderboardUser, LeaderboardTab, CurrentUserMeta, NavItem } from "../../types/community";
+import { Star, Flame } from "lucide-react";
+import type { LeaderboardUser, LeaderboardTab, NavItem } from "../../types/community";
 
 const TABS: LeaderboardTab[] = ["Global", "Local", "Friends"];
 

@@ -25,7 +25,7 @@ export function Header({ user, onProfileClick, onStreakClick }: HeaderProps) {
 
       {/* App Name */}
       <span className="font-extrabold text-[17px] tracking-tight" style={{ color: "var(--gold-light)", fontFamily: "var(--font-display)" }}>
-        The Sanctuary
+        AyahFlow
       </span>
 
       {/* Streak Badge */}

@@ -3,7 +3,7 @@ import type { UserProfile, UserSettings } from "./types";
 export const DUMMY_PROFILE: UserProfile = {
   id: "u1",
   name: "Ibrahim Al-Farsi",
-  sanctuaryTitle: "The Sanctuary",
+  sanctuaryTitle: "AyahFlow",
   country: "Egypt",
   gender: "male",
   email: "ibrahim@example.com",

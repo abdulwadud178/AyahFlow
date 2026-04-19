@@ -36,7 +36,7 @@ export function LeaderboardScreen({
         <div className="flex items-center gap-2">
           <Avatar url={currentUser.avatarUrl} name={currentUser.name} size={36} />
           <span className="text-sm font-semibold" style={{ color: "#c8dfaa" }}>
-            {groupName ?? "The Sanctuary"}
+            {groupName ?? "AyahFlow"}
           </span>
         </div>
         <Flame size={22} color="#d4a84b" />

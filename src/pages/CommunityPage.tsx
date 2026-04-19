@@ -41,7 +41,7 @@ export default function CommunityPage() {
               top3={DUMMY_TOP3}
               rest={DUMMY_REST}
               currentUser={DUMMY_CURRENT_USER}
-              groupName="The Sanctuary"
+              groupName="AyahFlow"
             />
           </motion.div>
         ) : (

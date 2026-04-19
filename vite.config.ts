@@ -15,9 +15,9 @@ export default defineConfig({
         enabled: true,
       },
       manifest: {
-        name: "Ayah Flow",
+        name: "AyahFlow",
         short_name: "AyahFlow",
-        description: "Ayah Flow PWA",
+        description: "AyahFlow PWA",
         theme_color: "#000000",
         icons: [
           {
